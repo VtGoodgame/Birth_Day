@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Анимация сердечка с поздравлением</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #111;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        .greeting {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 600px;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+        .greeting h1 {
+            color: #ff69b4;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+        .greeting p {
+            font-size: 1.2em;
+            line-height: 1.5;
+        }
+        canvas {
+            border: 1px solid #333;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="greeting" id="greeting">
+        <h1>С Днём Рождения!</h1>
+        <p>Хочу пожелать тебе оставаться таким же позитивным и приятным человеком, надеюсь тебя всегда будут окружать такие же прекрасные люди как и ты</p>
+    </div>
+    
+    <canvas id="heartCanvas" width="600" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        const greeting = document.getElementById('greeting');
+        
+        // Параметры анимации
+        const WIDTH = canvas.width;
+        const HEIGHT = canvas.height;
+        const SCALE = 15;
+        const POINTS = 6000;
+        let currentPoint = 0;
+        
+        // Функции для расчета координат сердечка
+        function heart1(t) {
+            return 15 * Math.pow(Math.sin(t), 3);
+        }
+        
+        function heart2(t) {
+            return 12 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+        }
+        
+        // Настройка canvas
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.strokeStyle = 'pink';
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        
+        // Показываем текст с задержкой
+        setTimeout(() => {
+            greeting.style.opacity = '1';
+        }, 1000);
+        
+        // Функция анимации
+        function animate() {
+            if (currentPoint < POINTS) {
+                const x = heart1(currentPoint) * SCALE;
+                const y = heart2(currentPoint) * SCALE;
+                
+                if (currentPoint === 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(WIDTH/2 + x, HEIGHT/2 - y);
+                } else {
+                    ctx.lineTo(WIDTH/2 + x, HEIGHT/2 - y);
+                    ctx.stroke();
+                }
+                
+                currentPoint++;
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        // Запуск анимации
+        animate();
+    </script>
+</body>
+</html>
